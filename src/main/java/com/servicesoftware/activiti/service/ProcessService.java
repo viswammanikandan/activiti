@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.task.Task;
@@ -26,9 +25,7 @@ public class ProcessService {
 	@Autowired
 	private TaskService taskService;
 
-	@Autowired
-	private RepositoryService repositoryService;
-
+	 
 	// start the process and set employee as variable
 	public String startTheProcess(String assignee) {
 
@@ -45,31 +42,15 @@ public class ProcessService {
 		
 		System.out.println("Task 1 starts here..."+tasks.toString());
 		
-		tasks.forEach(task ->{
-			taskService.complete(task.getId());
-		});
-		
 		return "All tasks completed successfully";
 	}
-
-	// fetching process and task information
-	public String processInformation() {
-
-		List<Task> taskList = taskService.createTaskQuery().orderByTaskCreateTime().asc().list();
-
-		StringBuilder processAndTaskInfo = new StringBuilder();
-		
-		processAndTaskInfo.append("Number of process definition available: "
-				+ repositoryService.createProcessDefinitionQuery().count() + " | Task Details= ");
-
-		taskList.forEach(task -> {
-
-			processAndTaskInfo.append("ID: " + task.getId() + ", Name: " + task.getName() + ", Assignee: "
-					+ task.getAssignee() + ", Description: " + task.getDescription()+"\n");
-		});
-
-		return processAndTaskInfo.toString();
-	}
+	
+		public String startTheApprovalProcess() {
+			System.out.println("Process intiated successfully...");
+			runtimeService.startProcessInstanceByKey("SerivceSoftwarezV2");
+			
+			return "All tasks completed successfully";
+		}
 
 	// fetch task assigned to employee
 	public List<Task> getTasks(String assignee) {

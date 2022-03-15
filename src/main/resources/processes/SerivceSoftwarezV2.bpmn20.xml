@@ -1,0 +1,130 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/processdef" xmlns:modeler="http://activiti.com/modeler" modeler:version="1.0en" modeler:exportDateTime="20220314201159717" modeler:modelId="1001" modeler:modelVersion="1" modeler:modelLastUpdated="1647268897672">
+  <process id="SerivceSoftwarezV2" name="SerivceSoftwarezV2" isExecutable="true">
+    <startEvent id="start_id" name="Start">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[startEvent1]]></modeler:editor-resource-id>
+      </extensionElements>
+    </startEvent>
+    <serviceTask id="service_task_1" name="MessagingService" activiti:expression="${publisherService.myService()}">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-B3F22431-9842-4DAF-9E52-9B3D6E1F6CC6]]></modeler:editor-resource-id>
+      </extensionElements>
+    </serviceTask>
+    <exclusiveGateway id="decision" name="decisioncheck">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-70C097C9-C1ED-4486-A740-7DD898852A08]]></modeler:editor-resource-id>
+      </extensionElements>
+    </exclusiveGateway>
+    <endEvent id="end_id" name="End">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-6CF313AA-0B41-44EF-BB98-BA88D5EC2640]]></modeler:editor-resource-id>
+      </extensionElements>
+    </endEvent>
+    <sequenceFlow id="sid-C7DB4893-11E1-4F72-A3DD-DD76C56EA883" sourceRef="start_id" targetRef="service_task_1">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-C7DB4893-11E1-4F72-A3DD-DD76C56EA883]]></modeler:editor-resource-id>
+      </extensionElements>
+    </sequenceFlow>
+    <serviceTask id="Approval_Check_Id" name="ApprovalCheck" activiti:class="com.servicesoftware.activiti.service.ApprovalCheckService">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-B47CB3E8-3410-4CD7-8F74-FC55CDA0A2F8]]></modeler:editor-resource-id>
+      </extensionElements>
+    </serviceTask>
+    <sequenceFlow id="sid-F3383FA9-F8B2-437B-A554-A96AC30611F3" sourceRef="service_task_1" targetRef="Approval_Check_Id">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-F3383FA9-F8B2-437B-A554-A96AC30611F3]]></modeler:editor-resource-id>
+      </extensionElements>
+    </sequenceFlow>
+    <sequenceFlow id="sid-CE6CDAFD-E7AA-4525-A71C-472C6AA3D475" sourceRef="Approval_Check_Id" targetRef="decision">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-CE6CDAFD-E7AA-4525-A71C-472C6AA3D475]]></modeler:editor-resource-id>
+      </extensionElements>
+    </sequenceFlow>
+    <serviceTask id="Failure_Service_Id" name="FailureService" activiti:expression="${publisherService.failNotification()}">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-C9C42340-ED22-4549-BC78-5213D2835009]]></modeler:editor-resource-id>
+      </extensionElements>
+    </serviceTask>
+    <serviceTask id="Success_Service_Id" name="SuccessService" activiti:expression="${publisherService.successNotification()}">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-C3ADD4CF-0AC4-4910-BB40-9729D7506B22]]></modeler:editor-resource-id>
+      </extensionElements>
+    </serviceTask>
+    <sequenceFlow id="sid-E598E877-6427-43E3-A37B-2D601D129F24" sourceRef="Success_Service_Id" targetRef="end_id">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-E598E877-6427-43E3-A37B-2D601D129F24]]></modeler:editor-resource-id>
+      </extensionElements>
+    </sequenceFlow>
+    <sequenceFlow id="sid-6E774EA8-7E8B-4C01-8E5D-83B7E7391E72" sourceRef="Failure_Service_Id" targetRef="end_id">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-6E774EA8-7E8B-4C01-8E5D-83B7E7391E72]]></modeler:editor-resource-id>
+      </extensionElements>
+    </sequenceFlow>
+    <sequenceFlow id="decision_id" name="no" sourceRef="decision" targetRef="Failure_Service_Id">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-E63CEB08-3477-41EB-9FC3-9BB2A0F70051]]></modeler:editor-resource-id>
+      </extensionElements>
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${approved == false}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="sid-B798719D-C506-47B7-90F6-319A114138F2" name="yes" sourceRef="decision" targetRef="Success_Service_Id">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-B798719D-C506-47B7-90F6-319A114138F2]]></modeler:editor-resource-id>
+      </extensionElements>
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${approved == true}]]></conditionExpression>
+    </sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_SerivceSoftwarezV2">
+    <bpmndi:BPMNPlane bpmnElement="SerivceSoftwarezV2" id="BPMNPlane_SerivceSoftwarezV2">
+      <bpmndi:BPMNShape bpmnElement="start_id" id="BPMNShape_start_id">
+        <omgdc:Bounds height="30.0" width="30.0" x="100.0" y="120.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="service_task_1" id="BPMNShape_service_task_1">
+        <omgdc:Bounds height="75.0" width="114.0" x="257.0" y="97.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="decision" id="BPMNShape_decision">
+        <omgdc:Bounds height="40.0" width="40.0" x="615.0" y="111.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="end_id" id="BPMNShape_end_id">
+        <omgdc:Bounds height="28.0" width="28.0" x="900.0" y="117.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="Approval_Check_Id" id="BPMNShape_Approval_Check_Id">
+        <omgdc:Bounds height="80.0" width="100.0" x="450.0" y="95.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="Failure_Service_Id" id="BPMNShape_Failure_Service_Id">
+        <omgdc:Bounds height="80.0" width="100.0" x="724.5999999999999" y="0.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="Success_Service_Id" id="BPMNShape_Success_Service_Id">
+        <omgdc:Bounds height="80.0" width="100.0" x="724.5999999999999" y="225.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="sid-F3383FA9-F8B2-437B-A554-A96AC30611F3" id="BPMNEdge_sid-F3383FA9-F8B2-437B-A554-A96AC30611F3">
+        <omgdi:waypoint x="371.0" y="134.65322580645162"/>
+        <omgdi:waypoint x="450.0" y="134.86559139784947"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-CE6CDAFD-E7AA-4525-A71C-472C6AA3D475" id="BPMNEdge_sid-CE6CDAFD-E7AA-4525-A71C-472C6AA3D475">
+        <omgdi:waypoint x="550.0" y="133.51851851851853"/>
+        <omgdi:waypoint x="615.5755395683453" y="131.57553956834533"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-B798719D-C506-47B7-90F6-319A114138F2" id="BPMNEdge_sid-B798719D-C506-47B7-90F6-319A114138F2">
+        <omgdi:waypoint x="645.1951577402788" y="140.8048422597212"/>
+        <omgdi:waypoint x="732.922097378277" y="225.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="decision_id" id="BPMNEdge_decision_id">
+        <omgdi:waypoint x="645.4229074889868" y="121.42290748898678"/>
+        <omgdi:waypoint x="724.5999999999999" y="41.015538290788015"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-6E774EA8-7E8B-4C01-8E5D-83B7E7391E72" id="BPMNEdge_sid-6E774EA8-7E8B-4C01-8E5D-83B7E7391E72">
+        <omgdi:waypoint x="824.5999999999999" y="72.63988522238162"/>
+        <omgdi:waypoint x="902.2767988237772" y="123.34712118338402"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-C7DB4893-11E1-4F72-A3DD-DD76C56EA883" id="BPMNEdge_sid-C7DB4893-11E1-4F72-A3DD-DD76C56EA883">
+        <omgdi:waypoint x="129.99995265293495" y="134.9623116767514"/>
+        <omgdi:waypoint x="257.0" y="134.643216080402"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-E598E877-6427-43E3-A37B-2D601D129F24" id="BPMNEdge_sid-E598E877-6427-43E3-A37B-2D601D129F24">
+        <omgdi:waypoint x="816.2119402985074" y="225.0"/>
+        <omgdi:waypoint x="903.9069458894859" y="140.7020749699347"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>
